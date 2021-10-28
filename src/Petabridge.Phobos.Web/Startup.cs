@@ -152,8 +152,7 @@ namespace Petabridge.Phobos.Web
                 var tracer = sp.GetRequiredService<ITracer>();
 
                 var config = ConfigurationFactory.ParseString(File.ReadAllText("app.conf"))
-                    .BootstrapFromDocker()
-                    .UseSerilog();
+                    .BootstrapFromDocker();
 
                 var phobosSetup = PhobosSetup.Create(new PhobosConfigBuilder()
                         .WithMetrics(m =>
