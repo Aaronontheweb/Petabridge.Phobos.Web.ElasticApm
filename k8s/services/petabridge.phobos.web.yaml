@@ -67,6 +67,11 @@ spec:
           value: "$(POD_NAME).phobos-web"
         - name: CLUSTER_PORT
           value: "4055"
+        - name: ELASTIC_APM_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: elastic-secrets
+              key: ELASTIC_APM_TOKEN
         - name: ASPNETCORE_ENVIRONMENT
           valueFrom:
             configMapKeyRef:
@@ -120,7 +125,7 @@ spec:
         args:
           - --reporter.grpc.tls.enabled=true
           - --reporter.grpc.host-port=$(ELASTIC_APM_URI)
-          - --agent.tags="elastic-apm-auth=Bearer $(ELASTIC_APM_TOKEN)"
+          #- --agent.tags="elastic-apm-auth=Bearer ${ELASTIC_APM_TOKEN}"
         resources:
           limits:
             memory: 50M
