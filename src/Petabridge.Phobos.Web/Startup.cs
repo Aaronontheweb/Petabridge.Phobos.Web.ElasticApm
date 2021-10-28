@@ -138,7 +138,8 @@ namespace Petabridge.Phobos.Web
                     .WithReporter(new CompositeReporter(remoteReporter, logReporter))
                     .WithSampler(sampler)
                     .WithScopeManager(
-                        new ActorScopeManager()); // IMPORTANT: ActorScopeManager needed to properly correlate trace inside Akka.NET
+                        new ActorScopeManager())
+                    .WithTag("elastic-apm-auth", $"Bearer {Environment.GetEnvironmentVariable("ELASTIC_APM_TOKEN")}"); // IMPORTANT: ActorScopeManager needed to properly correlate trace inside Akka.NET
 
                 return tracer.Build();
             });
@@ -152,8 +153,7 @@ namespace Petabridge.Phobos.Web
                 var tracer = sp.GetRequiredService<ITracer>();
 
                 var config = ConfigurationFactory.ParseString(File.ReadAllText("app.conf"))
-                    .BootstrapFromDocker()
-                    .UseSerilog();
+                    .BootstrapFromDocker();
 
                 var phobosSetup = PhobosSetup.Create(new PhobosConfigBuilder()
                         .WithMetrics(m =>
