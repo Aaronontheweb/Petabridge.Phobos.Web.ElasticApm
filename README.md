@@ -1,4 +1,4 @@
-# Petabridge.Phobos.Web
+# Petabridge.Phobos.Web.ElasticApm
 _This repository contains the source code for the [Phobos Quickstart Tutorial, which you can read here](https://phobos.petabridge.com/articles/quickstart.html)_.
 
 > NOTE: this solution uses the [shared Phobos + Prometheus Akka.Cluster dashboard for Grafana built by Petabridge](https://phobos.petabridge.com/articles/dashboards/prometheus-dashboard.html), which you can install in your own application via Grafana Cloud here: https://grafana.com/grafana/dashboards/13775
@@ -9,10 +9,12 @@ This project is a ready-made solution for testing [Phobos](https://phobos.petabr
 - ASP.NET Core 3.1
 - [Akka.Cluster](https://getakka.net/)
 - [Prometheus](https://prometheus.io/)
-- [Jaeger Tracing](https://www.jaegertracing.io/)
+- [Jaeger Tracing](https://www.jaegertracing.io/) routed to [Elastic APM Cloud](https://www.elastic.co/) via
 - [Grafana](https://grafana.com/)
 - [Docker](https://www.docker.com/)
 - and finally, [Kubernetes](https://kubernetes.io/)
+
+This repository ultimately is designed to help route data to the Elastic APM cloud via its [Elastic Server Jaeger integration](https://www.elastic.co/guide/en/apm/server/current/jaeger.html).
 
 ## Build and Local Deployment
 Start by cloning this repository to your local system.
@@ -47,7 +49,7 @@ This will create the Docker images the solution needs to run inside Kubernetes: 
 From there, everything you need to run the solution in Kubernetes is already defined inside the [`k8s/` folder](k8s/) - just run the following command to launch the Phobos-enabled application inside Kubernetes:
 
 ```
-PS> ./k8s/deployAll.cmd
+PS> ./k8s/deployAll.cmd [Elastic Apm Address]:443 [Elastic Apm Secret]
 ```
 
 This will spin up a separate Kubernetes namespace, `phobos-web`, and you can view which services are deployed by running the following command:
@@ -93,7 +95,7 @@ replicaset.apps/prometheus-deployment-c6d99b8b9   1         1         1       11
 Once the cluster is fully up and running you can explore the application and its associated telemetry via the following Urls:
 
 * [http://localhost:1880](http://localhost:1880) - generates traffic across the Akka.NET cluster inside the `phobos-web` service.
-* [http://localhost:16686/](http://localhost:16686/) - Jaeger tracing UI. Allows to explore the traces that are distributed across the different nodes in the cluster.
+* Your Elastic Cloud dashboard.
 * [http://localhost:9090/](http://localhost:9090/) - Prometheus query UI.
 * [http://localhost:3000/](http://localhost:3000/) - Grafana metrics. Log in using the username **admin** and the password **admin**. It includes some ready-made dashboards you can use to explore Phobos + App.Metrics metrics:
 	- [Akka.NET Cluster Metrics](http://localhost:3000/d/8Y4JcEfGk/akka-net-cluster-metrics?orgId=1&refresh=10s) - this is a pre-installed version of our [Akka.NET Cluster + Phobos Metrics (Prometheus Data Source) Dashboard](https://grafana.com/grafana/dashboards/13775) on Grafana Cloud, which you can install instantly into your own applications!
